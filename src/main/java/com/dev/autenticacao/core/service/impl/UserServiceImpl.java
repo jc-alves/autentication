@@ -44,10 +44,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void newUser(UserNewRequestDto userNewRequestDto) {
 
-        // verificar se há email ou usuario já cadastrado
-
-        if(isExistingUser(userNewRequestDto.getUsername(), userNewRequestDto.getEmail())) {
+        if(isExistingUser(userNewRequestDto.getUsername())) {
             throw new IllegalArgumentException("Usuario já cadastrado!");
+        }
+
+        if(isExistingEmail(userNewRequestDto.getEmail())) {
+            throw new IllegalArgumentException("Email já cadastrado!");
         }
 
         if (!passwordValidator.validate(userNewRequestDto.getPassword())) {
@@ -60,8 +62,13 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    private boolean isExistingUser(String nameUser, String email) {
+    private boolean isExistingUser(String nameUser) {
 
-        return userRepository.findUserByNameAndEmail(nameUser, email).isPresent();
+        return userRepository.findUserByName(nameUser).isPresent();
+    }
+
+    private boolean isExistingEmail(String email) {
+
+        return userRepository.findUserByEmail(email).isPresent();
     }
 }
