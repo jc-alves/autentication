@@ -4,10 +4,16 @@ import com.dev.autenticacao.application.api.v1.dto.mapper.UserMapper;
 import com.dev.autenticacao.application.api.v1.dto.request.UserNewRequestDto;
 import com.dev.autenticacao.application.api.v1.dto.response.UserNameResponseDto;
 import com.dev.autenticacao.core.domain.Users;
+import com.dev.autenticacao.core.exception.EventFullException;
+import com.dev.autenticacao.core.infra.RestExceptionHandler;
 import com.dev.autenticacao.core.repository.UserRepository;
 import com.dev.autenticacao.core.service.UserService;
 import com.dev.autenticacao.core.util.PasswordValidator;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +22,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private Logger logger;
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -44,22 +52,39 @@ public class UserServiceImpl implements UserService {
     @Override
     public void newUser(UserNewRequestDto userNewRequestDto) {
 
-        if(isExistingUser(userNewRequestDto.getUsername())) {
-            throw new IllegalArgumentException("Usuario já cadastrado!");
+        try {
+
+            if(isExistingUser(userNewRequestDto.getUsername())) {
+                throw new EventFullException("Usuario já cadastrado!");
+            }
+
+            if(isExistingEmail(userNewRequestDto.getEmail())) {
+                throw new EventFullException("Email já cadastrado!");
+            }
+
+            if (!passwordValidator.validate(userNewRequestDto.getPassword())) {
+                throw new EventFullException("Senha inválida. Deve ser forte.");
+            }
+
+            Users user = userMapper.userNemRequestToUsers(userNewRequestDto);
+            user.setPassword(bCryptPasswordEncoder.encode(userNewRequestDto.getPassword()));
+            userRepository.save(user);
+
+        } catch (CannotGetJdbcConnectionException e) {
+            // Banco de dados inacessível
+            logger.error("Banco de dados inacessível: {}", e.getMessage(), e);
+            throw new EventFullException("O sistema está temporariamente indisponível. Tente novamente mais tarde.");
+        } catch (DataAccessException e) {
+            // Outras falhas relacionadas ao banco
+           // logger.error("Erro de banco de dados: {}", e.getMessage(), e);
+            throw new RuntimeException("Erro ao processar os dados. Tente novamente mais tarde.", e);
         }
+//        catch (Exception e) {
+//            // Falha geral não esperada
+//            logger.error("Erro inesperado ao criar usuário: {}", e.getMessage(), e);
+//            throw new EventFullException("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+//        }
 
-        if(isExistingEmail(userNewRequestDto.getEmail())) {
-            throw new IllegalArgumentException("Email já cadastrado!");
-        }
-
-        if (!passwordValidator.validate(userNewRequestDto.getPassword())) {
-            throw new IllegalArgumentException("Senha inválida. Deve ser forte.");
-        }
-
-        Users user = userMapper.userNemRequestToUsers(userNewRequestDto);
-        user.setPassword(bCryptPasswordEncoder.encode(userNewRequestDto.getPassword()));
-
-        userRepository.save(user);
     }
 
     private boolean isExistingUser(String nameUser) {

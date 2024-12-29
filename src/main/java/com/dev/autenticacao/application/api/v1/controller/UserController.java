@@ -32,17 +32,9 @@ public class UserController {
     @PostMapping
     public ResponseEntity<String> createUser(@RequestBody UserNewRequestDto userNewRequestDto) {
 
-        try {
             userService.newUser(userNewRequestDto);
 
             return ResponseEntity.ok().build();
-        }catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage()); //badRequest().body(e.getMessage());
-
-        }
-
-
-
     }
 
 
