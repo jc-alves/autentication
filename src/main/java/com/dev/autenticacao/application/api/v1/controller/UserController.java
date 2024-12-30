@@ -14,27 +14,24 @@ import java.util.List;
 @RestController
 public class UserController {
 
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
-
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
 
     @GetMapping
     public List<UserNameResponseDto> test() {
         List<UserNameResponseDto> users = new ArrayList<>();
         users = userService.allUsers();
-
-
         return users;
     }
 
     @PostMapping
     public ResponseEntity<String> createUser(@RequestBody UserNewRequestDto userNewRequestDto) {
-
-            userService.newUser(userNewRequestDto);
-
-            return ResponseEntity.ok().build();
+        userService.newUser(userNewRequestDto);
+        return ResponseEntity.ok().build();
     }
 
 

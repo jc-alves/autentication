@@ -39,16 +39,23 @@ public class UserServiceImpl implements UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<UserNameResponseDto> allUsers() {
         List<Users> users = userRepository.findAll();
 
-        // Convertendo a lista de Users para UserNameResponseDto usando o mapper
         return users.stream()
-                .map(userMapper::usersToNameResponseDto) // Mapeia cada Users para UserNameResponseDto
+                .map(userMapper::usersToNameResponseDto)
                 .collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @param userNewRequestDto
+     */
     @Override
     public void newUser(UserNewRequestDto userNewRequestDto) {
 
@@ -71,29 +78,20 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
 
         } catch (CannotGetJdbcConnectionException e) {
-            // Banco de dados inacessível
             logger.error("Banco de dados inacessível: {}", e.getMessage(), e);
             throw new EventFullException("O sistema está temporariamente indisponível. Tente novamente mais tarde.");
         } catch (DataAccessException e) {
-            // Outras falhas relacionadas ao banco
-           // logger.error("Erro de banco de dados: {}", e.getMessage(), e);
+            logger.error("Erro de banco de dados: {}", e.getMessage(), e);
             throw new RuntimeException("Erro ao processar os dados. Tente novamente mais tarde.", e);
         }
-//        catch (Exception e) {
-//            // Falha geral não esperada
-//            logger.error("Erro inesperado ao criar usuário: {}", e.getMessage(), e);
-//            throw new EventFullException("Ocorreu um erro inesperado. Tente novamente mais tarde.");
-//        }
 
     }
 
     private boolean isExistingUser(String nameUser) {
-
         return userRepository.findUserByName(nameUser).isPresent();
     }
 
     private boolean isExistingEmail(String email) {
-
         return userRepository.findUserByEmail(email).isPresent();
     }
 }
