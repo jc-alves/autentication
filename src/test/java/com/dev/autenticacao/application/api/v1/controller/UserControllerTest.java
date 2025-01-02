@@ -1,7 +1,7 @@
 package com.dev.autenticacao.application.api.v1.controller;
 
 import com.dev.autenticacao.application.api.v1.dto.request.UserNewRequestDto;
-import com.dev.autenticacao.application.api.v1.dto.response.UserNameResponseDto;
+import com.dev.autenticacao.application.api.v1.dto.response.UserResponseDto;
 import com.dev.autenticacao.core.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,12 +32,12 @@ class UserControllerTest {
     @Test
     void test_shouldReturnListOfUsers() {
 
-        UserNameResponseDto user1 = new UserNameResponseDto("User1", "user1@user1.com.br");
-        UserNameResponseDto user2 = new UserNameResponseDto("User2", "user2@user2.com.br");
-        List<UserNameResponseDto> mockUsers = Arrays.asList(user1, user2);
+        UserResponseDto user1 = new UserResponseDto("User1", "user1@user1.com.br");
+        UserResponseDto user2 = new UserResponseDto("User2", "user2@user2.com.br");
+        List<UserResponseDto> mockUsers = Arrays.asList(user1, user2);
         when(userService.allUsers()).thenReturn(mockUsers);
 
-        List<UserNameResponseDto> result = userController.test();
+        List<UserResponseDto> result = userController.allUsers();
 
         // Assert
         assertEquals(2, result.size());
