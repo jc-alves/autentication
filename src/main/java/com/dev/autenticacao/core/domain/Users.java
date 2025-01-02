@@ -2,6 +2,7 @@ package com.dev.autenticacao.core.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,7 @@ public class Users {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @ToString.Exclude
     private List<Roles> roles;
 
 }

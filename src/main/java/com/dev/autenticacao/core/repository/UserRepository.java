@@ -1,6 +1,7 @@
 package com.dev.autenticacao.core.repository;
 
 
+import com.dev.autenticacao.application.api.v1.dto.response.LoginResponse;
 import com.dev.autenticacao.core.domain.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

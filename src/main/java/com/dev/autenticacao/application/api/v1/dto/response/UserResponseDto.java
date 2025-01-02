@@ -7,8 +7,7 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 @Data
-public class UserNameResponseDto {
+public class UserResponseDto {
     private String username;
     private String email;
-    private String password;
 }

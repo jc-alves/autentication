@@ -3,16 +3,15 @@ package com.dev.autenticacao.core.service.impl;
 import com.dev.autenticacao.application.api.v1.dto.mapper.UserMapper;
 import com.dev.autenticacao.application.api.v1.dto.request.UserNewRequestDto;
 import com.dev.autenticacao.application.api.v1.dto.response.UserNameResponseDto;
+import com.dev.autenticacao.application.api.v1.dto.response.UserResponseDto;
 import com.dev.autenticacao.core.domain.Users;
 import com.dev.autenticacao.core.exception.EventFullException;
-import com.dev.autenticacao.core.infra.RestExceptionHandler;
 import com.dev.autenticacao.core.repository.UserRepository;
 import com.dev.autenticacao.core.service.UserService;
 import com.dev.autenticacao.core.util.PasswordValidator;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,11 +43,11 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public List<UserNameResponseDto> allUsers() {
+    public List<UserResponseDto> allUsers() {
         List<Users> users = userRepository.findAll();
 
         return users.stream()
-                .map(userMapper::usersToNameResponseDto)
+                .map(userMapper::usersToResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -86,6 +85,8 @@ public class UserServiceImpl implements UserService {
         }
 
     }
+
+
 
     private boolean isExistingUser(String nameUser) {
         return userRepository.findUserByName(nameUser).isPresent();

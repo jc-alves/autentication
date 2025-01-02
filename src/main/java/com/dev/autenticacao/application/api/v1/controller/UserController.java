@@ -2,6 +2,7 @@ package com.dev.autenticacao.application.api.v1.controller;
 
 import com.dev.autenticacao.application.api.v1.dto.request.UserNewRequestDto;
 import com.dev.autenticacao.application.api.v1.dto.response.UserNameResponseDto;
+import com.dev.autenticacao.application.api.v1.dto.response.UserResponseDto;
 import com.dev.autenticacao.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,8 @@ public class UserController {
 
 
     @GetMapping
-    public List<UserNameResponseDto> test() {
-        List<UserNameResponseDto> users = new ArrayList<>();
-        users = userService.allUsers();
-        return users;
+    public List<UserResponseDto> allUsers() {
+        return userService.allUsers();
     }
 
     @PostMapping
