@@ -8,7 +8,6 @@ import lombok.Data;
 public class UserNewRequestDto {
 
     private String username;
-    @JsonIgnore
     private String password;
     private String email;
 }

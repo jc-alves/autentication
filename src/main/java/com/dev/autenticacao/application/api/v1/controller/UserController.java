@@ -1,15 +1,15 @@
 package com.dev.autenticacao.application.api.v1.controller;
 
 import com.dev.autenticacao.application.api.v1.dto.request.UserNewRequestDto;
-import com.dev.autenticacao.application.api.v1.dto.response.UserNameResponseDto;
 import com.dev.autenticacao.application.api.v1.dto.response.UserResponseDto;
 import com.dev.autenticacao.core.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.dev.autenticacao.infrastructure.util.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping(path = "/v1/user", produces = "application/json")
 @RestController
@@ -28,10 +28,14 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody UserNewRequestDto userNewRequestDto) {
+    public ResponseEntity<ApiResponse<Map<String, String>>> createUser(@RequestBody UserNewRequestDto userNewRequestDto) {
         userService.newUser(userNewRequestDto);
-        return ResponseEntity.ok().build();
-    }
+        // Criando o objeto com o token
+        Map<String, String> responseData = new HashMap<>();
+        responseData.put("message", "Usuario Criado");
 
+
+        return ResponseEntity.ok(ApiResponse.success(responseData));
+    }
 
 }
