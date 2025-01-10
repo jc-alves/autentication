@@ -21,7 +21,6 @@ public class UserController {
         this.userService = userService;
     }
 
-
     @GetMapping
     public List<UserResponseDto> allUsers() {
         return userService.allUsers();
@@ -30,10 +29,8 @@ public class UserController {
     @PostMapping
     public ResponseEntity<ApiResponse<Map<String, String>>> createUser(@RequestBody UserNewRequestDto userNewRequestDto) {
         userService.newUser(userNewRequestDto);
-        // Criando o objeto com o token
         Map<String, String> responseData = new HashMap<>();
         responseData.put("message", "Usuario Criado");
-
 
         return ResponseEntity.ok(ApiResponse.success(responseData));
     }

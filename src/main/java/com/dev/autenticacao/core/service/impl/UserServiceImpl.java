@@ -2,7 +2,6 @@ package com.dev.autenticacao.core.service.impl;
 
 import com.dev.autenticacao.application.api.v1.dto.mapper.UserMapper;
 import com.dev.autenticacao.application.api.v1.dto.request.UserNewRequestDto;
-import com.dev.autenticacao.application.api.v1.dto.response.UserNameResponseDto;
 import com.dev.autenticacao.application.api.v1.dto.response.UserResponseDto;
 import com.dev.autenticacao.core.domain.Users;
 import com.dev.autenticacao.core.exception.EventFullException;

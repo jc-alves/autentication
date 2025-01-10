@@ -11,6 +11,6 @@ public interface UserMapper {
 
     UserNameResponseDto usersToNameResponseDto(Users users);
     UserResponseDto usersToResponseDto(Users users);
-
     Users userNemRequestToUsers(UserNewRequestDto userNewRequestDto);
+
 }
