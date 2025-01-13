@@ -18,6 +18,11 @@ public class AuthController {
         this.authService = authService;
     }
 
+    /**
+     * Requição liberada sem token.
+     * @param loginRequestDto
+     * @return token
+     */
     @PostMapping
     public ResponseEntity<ApiResponse<TokenResponse>> generationToken(@RequestBody LoginRequestDto loginRequestDto) {
         return ResponseEntity.ok(

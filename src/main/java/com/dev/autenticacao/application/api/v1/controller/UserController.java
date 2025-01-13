@@ -21,18 +21,32 @@ public class UserController {
         this.userService = userService;
     }
 
+     /**
+     * Somente usuarios autenticados podem acessar (Qualquer perfil)
+     * @return lista de usuarios
+     */
     @GetMapping
-    public List<UserResponseDto> allUsers() {
-        return userService.allUsers();
+    public ResponseEntity<ApiResponse<List<UserResponseDto>>> allUsers() {
+        return ResponseEntity.ok(ApiResponse.success(userService.allUsers()));
     }
 
+    /**
+     * Acesso liberado para usuarios autenticados com o perfil de administrador.
+     * @param userNewRequestDto
+     * @return
+     */
     @PostMapping
     public ResponseEntity<ApiResponse<Map<String, String>>> createUser(@RequestBody UserNewRequestDto userNewRequestDto) {
         userService.newUser(userNewRequestDto);
         Map<String, String> responseData = new HashMap<>();
-        responseData.put("message", "Usuario Criado");
+        responseData.put("message", "Usuário Criado");
 
         return ResponseEntity.ok(ApiResponse.success(responseData));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponseDto>> userId(@PathVariable long id) {
+        return ResponseEntity.ok(ApiResponse.success(userService.findById(id)));
     }
 
 }

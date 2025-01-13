@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,7 +86,28 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public UserResponseDto findById(long id) {
 
+        try {
+            Optional<Users> user = userRepository.findById(id);
+
+            if (user.isEmpty()) {
+                throw new EventFullException("Usuário não localizado");
+            }
+
+            return user.map(userMapper::usersToResponseDto)
+                    .orElseThrow(() -> new EventFullException("Erro ao mapear o usuário para DTO"));
+
+        } catch (CannotGetJdbcConnectionException e) {
+            logger.error("Banco de dados inacessível: {}", e.getMessage(), e);
+            throw new EventFullException("O sistema está temporariamente indisponível. Tente novamente mais tarde.");
+        } catch (DataAccessException e) {
+            logger.error("Erro de banco de dados: {}", e.getMessage(), e);
+            throw new RuntimeException("Erro ao processar os dados. Tente novamente mais tarde.", e);
+        }
+
+    }
 
     private boolean isExistingUser(String nameUser) {
         return userRepository.findUserByName(nameUser).isPresent();

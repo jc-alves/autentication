@@ -11,4 +11,6 @@ public interface UserService {
     List<UserResponseDto> allUsers();
 
     void newUser(UserNewRequestDto userNewRequestDto);
+
+    UserResponseDto findById(long id);
 }

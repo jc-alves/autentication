@@ -1,7 +1,6 @@
 package com.dev.autenticacao.core.service.impl;
 
 import com.dev.autenticacao.application.api.v1.dto.response.TokenResponse;
-import com.dev.autenticacao.core.domain.Roles;
 import com.dev.autenticacao.core.exception.EventFullException;
 import com.dev.autenticacao.core.repository.UserRepository;
 import com.dev.autenticacao.core.service.AuthService;
@@ -41,20 +40,19 @@ public class AuthServiceImpl implements AuthService {
         var now = Instant.now();
         var expiresIn = 3600L;
 
-        List<String> role = user.getRoles()
+        List<String> roles = user.getRoles()
                 .stream()
-                .map(Roles::getName)
-                .collect(Collectors.toList());
+                .map(r -> r.getName())  // Adiciona o prefixo "ROLE_" corretamente
+                .collect(Collectors.toList());    // Cada role será um item individual na lista
 
         var claims = JwtClaimsSet.builder()
                 .issuer("API SysTech")
                 .subject(userResponse.get().getId().toString())
-                .claim("scope", role)
+                .claim("scope", roles)  // Passa a lista de roles separadas
                 .expiresAt(now.plusSeconds(expiresIn))
                 .build();
 
         return new TokenResponse(jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue());
     }
-
 
 }
