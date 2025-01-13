@@ -3,6 +3,7 @@ package com.dev.autenticacao.application.api.v1.controller;
 import com.dev.autenticacao.application.api.v1.dto.request.UserNewRequestDto;
 import com.dev.autenticacao.application.api.v1.dto.response.UserResponseDto;
 import com.dev.autenticacao.core.service.UserService;
+import com.dev.autenticacao.infrastructure.util.ApiResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -10,8 +11,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -37,12 +40,12 @@ class UserControllerTest {
         List<UserResponseDto> mockUsers = Arrays.asList(user1, user2);
         when(userService.allUsers()).thenReturn(mockUsers);
 
-       // List<UserResponseDto> result = userController.allUsers();
-        // Assert
-//        assertEquals(2, result.size());
-//        assertEquals("User1", result.get(0).getUsername());
-//        assertEquals("User2", result.get(1).getUsername());
-//        verify(userService, times(1)).allUsers();
+        ResponseEntity<ApiResponse<List<UserResponseDto>>> result = userController.allUsers();
+
+        assertEquals(2, result.getBody().getData().size());
+        assertEquals("User1", result.getBody().getData().get(0).getUsername());
+        assertEquals("User2", result.getBody().getData().get(1).getUsername());
+        verify(userService, times(1)).allUsers();
     }
 
     @Test
@@ -50,9 +53,9 @@ class UserControllerTest {
         UserNewRequestDto mockRequest = new UserNewRequestDto();
         mockRequest.setUsername("New User");
 
-       // ResponseEntity<String> response = userController.createUser(mockRequest);
-        // Assert
-       // assertEquals(200, response.getStatusCodeValue());
+        ResponseEntity<ApiResponse<Map<String, String>>> response = userController.createUser(mockRequest);
+
+        assertEquals(200, response.getStatusCode().value());
         verify(userService, times(1)).newUser(mockRequest);
     }
 }
