@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
 
         List<String> roles = user.getRoles()
                 .stream()
-                .map(r -> r.getName())  // Adiciona o prefixo "ROLE_" corretamente
+                .map(r -> "ROLE_" + r.getName())  // Adiciona o prefixo "ROLE_" corretamente
                 .collect(Collectors.toList());    // Cada role será um item individual na lista
 
         var claims = JwtClaimsSet.builder()
